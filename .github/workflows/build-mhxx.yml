@@ -8,7 +8,7 @@ env:
 
 jobs:
   build:
-    runs-on: macos-26
+    runs-on: xcode-27
     timeout-minutes: 180
     steps:
       - name: Extract MHXX patches
@@ -110,8 +110,10 @@ jobs:
           git status --short
           git -C Cytrus status --short
 
-      - name: Show Xcode version (runner default)
-        run: xcodebuild -version
+      - name: Show Xcode (project needs Xcode 27)
+        run: |
+          ls -d /Applications/Xcode*.app
+          xcodebuild -version
 
       - name: Build (unsigned)
         run: |
