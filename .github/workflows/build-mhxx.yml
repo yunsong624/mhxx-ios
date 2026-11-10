@@ -115,6 +115,21 @@ jobs:
           ls -d /Applications/Xcode*.app
           xcodebuild -version
 
+      - name: Prepare Vulkan SDK headers (author machine layout)
+        run: |
+          SDK="$HOME/VulkanSDK/1.4.363.0/macOS/include"
+          mkdir -p "$SDK/glslang/SPIRV" "$SDK/glslang/MachineIndependent" "$SDK/vma" "$HOME/Developer/Repositories"
+          git clone -q --depth 1 -b vulkan-sdk-1.4.363.0 https://github.com/KhronosGroup/Vulkan-Headers vh
+          cp -R vh/include/* "$SDK/"
+          git clone -q --depth 1 -b vulkan-sdk-1.4.363.0 https://github.com/KhronosGroup/glslang gl
+          cp -R gl/glslang/Include gl/glslang/Public "$SDK/glslang/"
+          cp gl/glslang/MachineIndependent/*.h "$SDK/glslang/MachineIndependent/"
+          cp gl/SPIRV/*.h gl/SPIRV/*.hpp11 "$SDK/glslang/SPIRV/"
+          git clone -q --depth 1 -b v3.3.0 https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator vma
+          cp vma/include/vk_mem_alloc.h "$SDK/vma/"
+          defaults write com.apple.dt.Xcode IDEBuildingContinueBuildingAfterErrors -bool YES
+          ls "$SDK" "$SDK/glslang"
+
       - name: Build (unsigned)
         run: |
           set -o pipefail
