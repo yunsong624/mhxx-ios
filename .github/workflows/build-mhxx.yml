@@ -1,0 +1,154 @@
+name: Build MHXX IPA
+
+on:
+  workflow_dispatch:
+
+env:
+  FOLIUM_COMMIT: 4dbc9e8e8450eef350109fe0e816554dcfaee7e5
+
+jobs:
+  build:
+    runs-on: macos-26
+    timeout-minutes: 180
+    steps:
+      - name: Extract MHXX patches
+        run: |
+          mkdir -p kit
+          base64 --decode > kit/patches.tgz <<'B64'
+          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
+          B64
+          tar xzf kit/patches.tgz -C kit
+          ls -la kit/patches
+
+      - name: Checkout Folium (pinned)
+        run: |
+          git clone https://github.com/folium-app/Folium.git folium
+          cd folium
+          git checkout "$FOLIUM_COMMIT"
+          git submodule update --init --recursive --depth 1
+
+      - name: Apply MHXX patches
+        run: |
+          cd folium
+          git apply --ignore-whitespace --whitespace=nowarn ../kit/patches/folium-mhxx.patch
+          git -C Cytrus apply --whitespace=nowarn ../../kit/patches/cytrus-mhxx.patch
+          git status --short
+          git -C Cytrus status --short
+
+      - name: Show Xcode version (runner default)
+        run: xcodebuild -version
+
+      - name: Build (unsigned)
+        run: |
+          set -o pipefail
+          cd folium
+          xcodebuild \
+            -project Folium.xcodeproj \
+            -scheme Folium \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            -skipPackagePluginValidation \
+            -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build 2>&1 | tee build.log | (grep -E "error:|BUILD (SUCCEEDED|FAILED)" || true)
+
+      - name: Package IPA
+        run: |
+          cd folium
+          APP=$(find build/Build/Products/Release-iphoneos -maxdepth 1 -name "*.app" | head -1)
+          echo "app: $APP"
+          mkdir -p Payload
+          cp -R "$APP" Payload/
+          zip -qry ../MHXX.ipa Payload
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: MHXX-ipa
+          path: MHXX.ipa
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: folium/build.log
