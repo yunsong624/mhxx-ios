@@ -125,6 +125,8 @@ jobs:
           cp -R gl/glslang/Include gl/glslang/Public "$SDK/glslang/"
           cp gl/glslang/MachineIndependent/*.h "$SDK/glslang/MachineIndependent/"
           cp gl/SPIRV/*.h gl/SPIRV/*.hpp11 "$SDK/glslang/SPIRV/"
+          git clone -q --depth 1 -b vulkan-sdk-1.4.363.0 https://github.com/KhronosGroup/SPIRV-Headers sh
+          cp -R sh/include/spirv "$SDK/"
           git clone -q --depth 1 -b v3.3.0 https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator vma
           cp vma/include/vk_mem_alloc.h "$SDK/vma/"
           defaults write com.apple.dt.Xcode IDEBuildingContinueBuildingAfterErrors -bool YES
@@ -146,7 +148,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            build 2>&1 | tee build.log | (grep -E "error:|BUILD (SUCCEEDED|FAILED)" || true)
+            build 2>&1 | tee build.log | (grep -E "error:|Undefined symbols|referenced from|ld: |BUILD (SUCCEEDED|FAILED)" || true)
 
       - name: Package IPA
         run: |
